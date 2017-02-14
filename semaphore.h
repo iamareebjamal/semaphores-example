@@ -24,7 +24,11 @@ public:
 
     void try_wait();
 
-    ~semaphore();
+    void destroy();
+
+    ~semaphore() {
+        destroy();
+    }
 };
 
 

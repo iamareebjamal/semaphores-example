@@ -39,7 +39,7 @@ void semaphore::try_wait() {
     sem_trywait(sem);
 }
 
-semaphore::~semaphore() {
+void semaphore::destroy() {
     sem_destroy(sem);
 
     munmap(sem, sizeof(sem_t));
