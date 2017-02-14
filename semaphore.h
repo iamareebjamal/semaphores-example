@@ -8,14 +8,14 @@ using namespace std;
 
 class semaphore {
 private:
-    string _name;
+    int _id;
     sem_t *sem;
 
 public:
     semaphore();
-    semaphore(string name);
+    semaphore(int id);
 
-    string get_name();
+    int get_id();
 
     int get_value();
 
