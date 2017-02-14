@@ -1,3 +1,9 @@
+# CLion
+Debug/
+build/
+bin/
+.idea/
+
 # Compiled Object files
 *.slo
 *.lo
