@@ -28,6 +28,7 @@ void philosopher(int i, vector<semaphore*>& chopsticks) {
     }
 
     for (int j = 0; j < 100; ++j) {
+        usleep(100);
         cout << "Philosopher " << i << " wants to pick up " << first->get_id() << endl;
         first->wait();
         cout << "Philosopher " << i << " picked up " << first->get_id() << endl;
@@ -35,18 +36,23 @@ void philosopher(int i, vector<semaphore*>& chopsticks) {
         second->wait();
         cout << "Philosopher " << i << " picked up " << second->get_id() << endl;
         cout << "Philosopher " << i << " is eating for " << ++eat_time << " time!" << endl;
-        usleep(1000000);
+        usleep(1000);
         first->post();
         cout << "Philosopher " << i << " put down " << second->get_id() << endl;
         second->post();
         cout << "Philosopher " << i << " put down " << first->get_id() << endl << endl;
+        usleep(100);
     }
 }
+
+semaphore* lock;
 
 int main() {
     vector<semaphore*> chopsticks;
 
     try {
+        lock = new semaphore();
+
         for (int i = 0; i < 6; ++i)
             chopsticks.push_back(new semaphore(i + 1));
 
@@ -65,6 +71,7 @@ int main() {
     philosopher(num, chopsticks);
 
     clean_memory(chopsticks);
+    delete lock;
 
     return 0;
 }
