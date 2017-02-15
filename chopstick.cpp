@@ -2,18 +2,19 @@
 
 #include <sys/mman.h>
 
-chopstick::chopstick() : _id(0) {
+void chopstick::initialize_semaphore() {
     sem = (sem_t*) mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
 
     if(sem_init(sem, 1, 1) < 0)
         throw "Error initializing chopstick " + _id;
 }
 
-chopstick::chopstick(int id) : _id(id) {
-    sem = (sem_t*) mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
+chopstick::chopstick() : _id(0) {
+    initialize_semaphore();
+}
 
-    if(sem_init(sem, 1, 1) < 0)
-        throw "Error initializing chopstick " + _id;
+chopstick::chopstick(int id) : _id(id) {
+    initialize_semaphore();
 }
 
 int chopstick::get_id() {

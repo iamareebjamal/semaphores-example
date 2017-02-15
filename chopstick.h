@@ -11,6 +11,8 @@ private:
     int _id;
     sem_t *sem;
 
+    void initialize_semaphore();
+
 public:
     chopstick();
     chopstick(int id);
