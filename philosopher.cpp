@@ -9,18 +9,24 @@ void philosopher::set_chopstick(chopstick *first) {
 }
 
 int philosopher::pick_first() {
-    //cout << "Philosopher " << _id << " wants to pick up " << first->get_id() << endl;
+    cout << "Philosopher " << _id << " wants to pick up " << first->get_id() << endl;
     int result = first->pick_up();
-    //cout << "Philosopher " << _id << " picked up " << first->get_id() << endl;
+    cout << "Philosopher " << _id << " picked up " << first->get_id() << endl;
 
     return result;
 }
 
 int philosopher::try_pick_second(chopstick* second) {
+    cout << "Philosopher " << _id << " tries to pick up " << second->get_id() << endl;
+
     int result = second->try_to_pick();
 
-    if(result == 0)
+    if(result == 0) {
         this->second = second;
+        cout << "Philosopher " << _id << " picked up " << second->get_id() << endl;
+    } else {
+        cout << "Philosopher " << _id << " could not pick up " << second->get_id() << "! It was already picked up!" << endl;
+    }
 
     return result;
 }
@@ -28,7 +34,7 @@ int philosopher::try_pick_second(chopstick* second) {
 int put(int id, chopstick* chop) {
     int result = chop->put_down();
 
-    //cout << "Philosopher " << id << " put down " << chop->get_id() << endl;
+    cout << "Philosopher " << id << " put down " << chop->get_id() << endl;
 
     return result;
 }
