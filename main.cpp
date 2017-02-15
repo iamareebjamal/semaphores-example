@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "chopstick.h"
+#include "philosopher.h"
 
 using namespace std;
 
@@ -15,32 +16,29 @@ void clean_memory(T objects) {
 
 }
 
-int eat_time = 0;
-
-void philosopher(int i, vector<chopstick*>& chopsticks) {
+void start(philosopher& ph, vector<chopstick*>& chopsticks) {
+    int i = ph.get_id();
     int num = 6;
 
     chopstick* first = chopsticks[i];
     chopstick* second = chopsticks[(i+1)%num];
 
+
     if(i == 5) {
         std::swap(first, second);
     }
 
+    ph.set_chopsticks(first, second);
+
     for (int j = 0; j < 100; ++j) {
-        usleep(100);
-        cout << "Philosopher " << i << " wants to pick up " << first->get_id() << endl;
-        first->pick_up();
-        cout << "Philosopher " << i << " picked up " << first->get_id() << endl;
-        cout << "Philosopher " << i << " wants to pick up " << second->get_id() << endl;
-        second->pick_up();
-        cout << "Philosopher " << i << " picked up " << second->get_id() << endl;
-        cout << "Philosopher " << i << " is eating for " << ++eat_time << " time!" << endl;
-        usleep(10000);
-        first->put_down();
-        cout << "Philosopher " << i << " put down " << second->get_id() << endl;
-        second->put_down();
-        cout << "Philosopher " << i << " put down " << first->get_id() << endl << endl;
+        ph.pick_first();
+        ph.pick_second();
+
+        ph.eat();
+
+        ph.put_first();
+        ph.put_second();
+
         usleep(100);
     }
 }
@@ -72,7 +70,8 @@ int main() {
 
     int num = fork_processes();
 
-    philosopher(num, chopsticks);
+    philosopher ph(num);
+    start(ph, chopsticks);
 
     clean_memory(chopsticks);
 
