@@ -6,27 +6,27 @@
 
 using namespace std;
 
-class semaphore {
+class chopstick {
 private:
     int _id;
     sem_t *sem;
 
 public:
-    semaphore();
-    semaphore(int id);
+    chopstick();
+    chopstick(int id);
 
     int get_id();
 
     int get_value();
 
-    void wait();
-    void post();
+    int pick_up();
+    int try_to_pick();
 
-    void try_wait();
+    int put_down();
 
     void destroy();
 
-    ~semaphore() {
+    ~chopstick() {
         destroy();
     }
 };

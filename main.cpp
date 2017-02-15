@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <vector>
 
-#include "semaphore.h"
+#include "chopstick.h"
 
 using namespace std;
 
@@ -17,11 +17,11 @@ void clean_memory(T objects) {
 
 int eat_time = 0;
 
-void philosopher(int i, vector<semaphore*>& chopsticks) {
+void philosopher(int i, vector<chopstick*>& chopsticks) {
     int num = 6;
 
-    semaphore* first = chopsticks[i];
-    semaphore* second = chopsticks[(i+1)%num];
+    chopstick* first = chopsticks[i];
+    chopstick* second = chopsticks[(i+1)%num];
 
     if(i == 5) {
         std::swap(first, second);
@@ -30,37 +30,22 @@ void philosopher(int i, vector<semaphore*>& chopsticks) {
     for (int j = 0; j < 100; ++j) {
         usleep(100);
         cout << "Philosopher " << i << " wants to pick up " << first->get_id() << endl;
-        first->wait();
+        first->pick_up();
         cout << "Philosopher " << i << " picked up " << first->get_id() << endl;
         cout << "Philosopher " << i << " wants to pick up " << second->get_id() << endl;
-        second->wait();
+        second->pick_up();
         cout << "Philosopher " << i << " picked up " << second->get_id() << endl;
         cout << "Philosopher " << i << " is eating for " << ++eat_time << " time!" << endl;
-        usleep(1000);
-        first->post();
+        usleep(10000);
+        first->put_down();
         cout << "Philosopher " << i << " put down " << second->get_id() << endl;
-        second->post();
+        second->put_down();
         cout << "Philosopher " << i << " put down " << first->get_id() << endl << endl;
         usleep(100);
     }
 }
 
-semaphore* lock;
-
-int main() {
-    vector<semaphore*> chopsticks;
-
-    try {
-        lock = new semaphore();
-
-        for (int i = 0; i < 6; ++i)
-            chopsticks.push_back(new semaphore(i + 1));
-
-    } catch (string error) {
-        cout << error << endl;
-        return 0;
-    }
-
+int fork_processes() {
     int num;
     for (num = 0; num < 5; ++num) {
         int pid = fork();
@@ -68,10 +53,28 @@ int main() {
             break;
     }
 
+    return num;
+}
+
+
+int main() {
+    vector<chopstick*> chopsticks;
+
+    try {
+
+        for (int i = 0; i < 6; ++i)
+            chopsticks.push_back(new chopstick(i + 1));
+
+    } catch (string error) {
+        cout << error << endl;
+        return 0;
+    }
+
+    int num = fork_processes();
+
     philosopher(num, chopsticks);
 
     clean_memory(chopsticks);
-    delete lock;
 
     return 0;
 }
