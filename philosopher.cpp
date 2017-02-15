@@ -34,7 +34,7 @@ int philosopher::try_pick_second(chopstick* second) {
 int put(int id, chopstick* chop) {
     int result = chop->put_down();
 
-    cout << "Philosopher " << id << " put down " << chop->get_id() << endl;
+    cout << "Philosopher " << id << " put down " << chop->get_id() << "\n" << endl;
 
     return result;
 }
@@ -52,6 +52,6 @@ int philosopher::get_id() {
 }
 
 void philosopher::eat() {
-    cout << "Philosopher " << _id << " is eating for " << ++eaten << " time!" << endl;
+    cout << "\nPhilosopher " << _id << " is eating for " << ++eaten << " time!\n" << endl;
     usleep(10000);
 }
