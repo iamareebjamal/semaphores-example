@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <vector>
+#include <cmath>
 
 #include "chopstick.h"
 #include "philosopher.h"
@@ -16,24 +17,22 @@ void clean_memory(T objects) {
 
 }
 
-void start(philosopher& ph, vector<chopstick*>& chopsticks) {
-    int i = ph.get_id();
-    int num = 6;
+void start(philosopher& ph, vector<chopstick*>& local, vector<chopstick*> table) {
+    int id = ph.get_id();
 
-    chopstick* first = chopsticks[i];
-    chopstick* second = chopsticks[(i+1)%num];
-
-
-    if(i == 5) {
-        std::swap(first, second);
-    }
+    chopstick* first = local[ (int) floor( (id-1) /2) ];
 
     ph.set_chopstick(first);
 
     for (int j = 0; j < 100; ++j) {
         ph.pick_first();
 
-        while(ph.try_pick_second(second));
+        for (vector<chopstick*>::iterator it = table.begin(); it != table.end(); ++it) {
+
+            if(ph.try_pick_second(*it) == 0) break;
+
+            if(it == table.end()) it = table.begin();
+        }
 
         ph.eat();
 
@@ -45,36 +44,40 @@ void start(philosopher& ph, vector<chopstick*>& chopsticks) {
 }
 
 int fork_processes() {
-    int num;
-    for (num = 0; num < 5; ++num) {
+    int id;
+    for (id = 0; id < 5; ++id) {
         int pid = fork();
         if (pid == 0)
             break;
     }
 
-    return num;
+    return id;
 }
 
-
 int main() {
-    vector<chopstick*> chopsticks;
+    vector<chopstick*> among_philosophers;
+    vector<chopstick*> on_table;
 
     try {
 
-        for (int i = 0; i < 6; ++i)
-            chopsticks.push_back(new chopstick(i + 1));
+        for (int i = 0; i < 3; ++i)
+            among_philosophers.push_back(new chopstick(i + 1));
+
+        for (int i = 0; i < 4; ++i)
+            on_table.push_back(new chopstick(3 + i + 1));
 
     } catch (string error) {
         cout << error << endl;
         return 0;
     }
 
-    int num = fork_processes();
+    int id = fork_processes();
 
-    philosopher ph(num);
-    start(ph, chopsticks);
+    philosopher ph(id+1);
+    start(ph, among_philosophers, on_table);
 
-    clean_memory(chopsticks);
+    clean_memory(among_philosophers);
+    clean_memory(on_table);
 
     return 0;
 }
