@@ -14,10 +14,10 @@ private:
 public:
     philosopher(int id);
 
-    void set_chopsticks(chopstick* first, chopstick* second);
+    void set_chopstick(chopstick* first);
 
     int pick_first();
-    int pick_second();
+    int try_pick_second(chopstick* second);
 
     int put_first();
     int put_second();

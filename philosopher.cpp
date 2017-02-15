@@ -2,34 +2,33 @@
 #include <unistd.h>
 #include "philosopher.h"
 
-
 philosopher::philosopher(int id) : _id(id), eaten(0) { }
 
-void philosopher::set_chopsticks(chopstick *first, chopstick *second) {
+void philosopher::set_chopstick(chopstick *first) {
     this->first = first;
-    this->second = second;
 }
 
-int pick(int id, chopstick* chop) {
-    cout << "Philosopher " << id << " wants to pick up " << chop->get_id() << endl;
-    int result = chop->pick_up();
-    cout << "Philosopher " << id << " picked up " << chop->get_id() << endl;
+int philosopher::pick_first() {
+    //cout << "Philosopher " << _id << " wants to pick up " << first->get_id() << endl;
+    int result = first->pick_up();
+    //cout << "Philosopher " << _id << " picked up " << first->get_id() << endl;
 
     return result;
 }
 
-int philosopher::pick_first() {
-    return pick(_id, first);
-}
+int philosopher::try_pick_second(chopstick* second) {
+    int result = second->try_to_pick();
 
-int philosopher::pick_second() {
-    return pick(_id, second);
+    if(result == 0)
+        this->second = second;
+
+    return result;
 }
 
 int put(int id, chopstick* chop) {
     int result = chop->put_down();
 
-    cout << "Philosopher " << id << " put down " << chop->get_id() << endl;
+    //cout << "Philosopher " << id << " put down " << chop->get_id() << endl;
 
     return result;
 }

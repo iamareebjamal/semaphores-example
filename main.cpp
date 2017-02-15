@@ -28,11 +28,12 @@ void start(philosopher& ph, vector<chopstick*>& chopsticks) {
         std::swap(first, second);
     }
 
-    ph.set_chopsticks(first, second);
+    ph.set_chopstick(first);
 
     for (int j = 0; j < 100; ++j) {
         ph.pick_first();
-        ph.pick_second();
+
+        while(ph.try_pick_second(second));
 
         ph.eat();
 
